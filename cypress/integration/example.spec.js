@@ -1,4 +1,21 @@
 describe('Sign up', () => {
+
+  var getEmailLink = function(body) {
+
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(body, 'text/html');
+    
+        var element = doc.body.getElementsByTagName('a');
+        
+        for(var i = 0; i < element.length; i++) {
+            if(element[i].href.includes('verifyLink')) {
+                return element[i].href;
+            }
+        }
+    
+        return false;
+    
+    }
  
   it('can load oauth demo site', () => {
     cy.visit('https://stage.4sd.com/');
@@ -11,7 +28,7 @@ describe('Sign up', () => {
   });
 
   const password = "test-password";
-  const username = "FUFU091";
+  const username = "FUFU3";
   const age = "50";
 
   let inboxId;
@@ -50,15 +67,16 @@ describe('Sign up', () => {
       // verify we received an email
       assert.isDefined(email);
       console.log(email.subject, email.body, email.attachments)
-      
+      assert.strictEqual(!!getEmailLink(email.body), true)
 
       // verify that email contains the "code"
-      assert.strictEqual(/VALIDATE EMAIL/.test(email.body), true);
-      // expect(email.body).to.contain('VALIDATE EMAIL');
+      //assert.strictEqual(/VALIDATE EMAIL/.test(email.body), true);
+      //expect(email.body).to.contain('VALIDATE EMAIL');
       // expect(email.subject).to.contain('Verify Email Address');
-      //cy.visit(email.body.text.links[1])
+      //cy.visit(getEmailLink(email.body))
+
       //cy.get('a[href*="https://tr.4sd.com/tr/*"]').click()
-      cy.get('#main').should('contain.text', 'VALIDATE EMAIL').click()
+      //cy.get('#main').should('contain.text', 'VALIDATE EMAIL').click()
 
       //https://tr.4sd.com/tr/0125QSWSG6jcJXVsuj76x9CQC821/
 
